@@ -14,7 +14,7 @@
 
 <script>
 import MapSVG from '@/assets/images/map.svg';
-
+import * as d3 from 'd3';
 export default {
   components: {
     MapSVG,
@@ -22,7 +22,26 @@ export default {
   data() {
     return {
       isLoading: false,
+      svg: null,
+      g: null,
     };
+  },
+  mounted() {
+    //на маунтед чтобы гарантировано было дерево
+    this.svg = d3.select(this.$refs.svg)
+    this.g = this.svg.select('g')
+    if(this.g) {
+      this.drawTables()
+    } else {
+      console.log('ERROR')
+    }
+    console.log(this.svg, this.g)
+  },
+  methods: {
+    drawTables() {
+      const svgTablesGroup = this.g.append('g').classed('groupPlaces', true)
+      console.log(svgTablesGroup)
+    }
   },
 };
 
