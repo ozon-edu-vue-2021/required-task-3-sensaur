@@ -9,7 +9,7 @@
     "group_id": 1,
     "color": "blue",
     "text": "Подразделение 2",
-    "counter": 6
+    "counter": 5
   },
   {
     "group_id": 2,
@@ -21,7 +21,7 @@
     "group_id": 3,
     "color": "gray",
     "text": "Подразделение 4",
-    "counter": 3
+    "counter": 4
   },
   {
     "group_id": 4,
