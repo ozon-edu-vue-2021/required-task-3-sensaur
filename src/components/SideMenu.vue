@@ -2,7 +2,7 @@
   <div class="menu">
     <div class="toolbar">
       <div class="toolbar__header">
-        <template v-if="!isUserOpenned">
+        <template v-if="isUserOpened">
           <h3>Информация</h3>
         </template>
         <template v-else>
@@ -15,7 +15,7 @@
       <div class="toolbar__actions"></div>
     </div>
     <div class="content">
-      <div v-if="!isUserOpenned" class="legend">
+      <div v-if="!isUserOpened" class="legend">
         <div class="legend__data">
           <div v-if="legend.length > 0" class="legend__items">
             <Draggable v-model="legend">
@@ -24,7 +24,7 @@
                 :key="index"
                 :color="item.color"
                 :text="item.text"
-                :counter="item.counter"
+                :counter="item.newCounter"
                 class="legend__item"
               />
             </Draggable>
@@ -48,12 +48,25 @@
 import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
 import legend from "@/assets/data/legend.json";
+import tables from "@/assets/data/tables.json";
 import Draggable from "vuedraggable";
 import { Doughnut as PieChart } from "vue-chartjs";
 
+let countedTables = tables
+  .map((el) => el.group_id)
+  .reduce(function (acc, curr) {
+    return acc[curr] ? ++acc[curr] : (acc[curr] = 1), acc;
+  }, {});
+
+// eslint-disable-next-line no-unused-vars
+let updatedLegend = legend.map((el, i) => {
+  el.newCounter = countedTables[i];
+  return el;
+});
+
 export default {
   props: {
-    isUserOpenned: {
+    isUserOpened: {
       type: Boolean,
       default: false,
     },
@@ -84,7 +97,7 @@ export default {
       this.legend = legend;
     },
     closeProfile() {
-      this.$emit("update:isUserOpenned", false);
+      this.$emit("update:isUserOpened", false);
     },
     makeChart() {
       const legendChartData = {
@@ -92,12 +105,8 @@ export default {
         datasets: [
           {
             label: "Легенда",
-            backgroundColor: this.legend.map(
-                (legendItem) => legendItem.color
-            ),
-            data: this.legend.map(
-                (legendItem) => legendItem.counter
-            ),
+            backgroundColor: this.legend.map((legendItem) => legendItem.color),
+            data: this.legend.map((legendItem) => legendItem.newCounter),
           },
         ],
       };
